@@ -14,3 +14,5 @@ Built with PostgreSQL for the database, Python for the backend logic, and Stream
 user interface, the system will efficiently handle metadata. This architecture ensures
 scalability, performance, and user-friendliness, offering a comprehensive solution for music
 data management that caters to diverse user needs.
+
+deneme
