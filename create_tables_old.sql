@@ -24,10 +24,31 @@ CREATE TABLE "user" (
     FOREIGN KEY (subscription_id) REFERENCES "subscription"(subscription_id)
 );
 
+-- PERFORMER TABLOSU
+CREATE TABLE PERFORMER (
+    performer_id SERIAL PRIMARY KEY,
+    performer_name VARCHAR(200) NOT NULL
+);
+
 -- ARTIST TABLOSU
 CREATE TABLE ARTIST (
-    artist_id SERIAL PRIMARY KEY,
-    artist_name VARCHAR(200) NOT NULL
+    artist_id INT PRIMARY KEY REFERENCES PERFORMER(performer_id),
+    birth_date DATE
+);
+
+-- ARTIST_GROUP TABLOSU
+CREATE TABLE ARTIST_GROUP (
+    group_id INT PRIMARY KEY REFERENCES PERFORMER(performer_id),
+    num_artist INT
+);
+
+-- MEMBER TABLOSU
+CREATE TABLE "member" (
+    artist_id INT NOT NULL,
+    group_id INT NOT NULL,
+    PRIMARY KEY (artist_id, group_id),
+    FOREIGN KEY (artist_id) REFERENCES ARTIST(artist_id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES ARTIST_GROUP(group_id) ON DELETE CASCADE
 );
 
 -- ALBUM TABLOSU
@@ -37,13 +58,13 @@ CREATE TABLE ALBUM (
     release_year INT 
 );
 
--- ALBUM_ARTIST TABLOSU
-CREATE TABLE ALBUM_ARTIST (
+-- ALBUM_PERFORMER TABLOSU
+CREATE TABLE ALBUM_PERFORMER (
     album_id INT NOT NULL,
-    artist_id INT NOT NULL,
-    PRIMARY KEY (album_id, artist_id),
+    performer_id INT NOT NULL,
+    PRIMARY KEY (album_id, performer_id),
     FOREIGN KEY (album_id) REFERENCES ALBUM(album_id),
-    FOREIGN KEY (artist_id) REFERENCES ARTIST(artist_id)
+    FOREIGN KEY (performer_id) REFERENCES PERFORMER(performer_id)
 );
 
 -- GENRE TABLOSU
@@ -71,13 +92,13 @@ CREATE TABLE ALBUM_SONG (
     FOREIGN KEY (song_id) REFERENCES SONG(song_id)
 );
 
--- SONG_ARTIST TABLOSU
-CREATE TABLE SONG_ARTIST (
+-- SONG_PERFORMER TABLOSU
+CREATE TABLE SONG_PERFORMER (
     song_id INT NOT NULL,
-    artist_id INT NOT NULL,
-    PRIMARY KEY (song_id, artist_id),
+    performer_id INT NOT NULL,
+    PRIMARY KEY (song_id, performer_id),
     FOREIGN KEY (song_id) REFERENCES SONG(song_id),
-    FOREIGN KEY (artist_id) REFERENCES ARTIST(artist_id)
+    FOREIGN KEY (performer_id) REFERENCES PERFORMER(performer_id)
 );
 
 -- PLAYLIST TABLOSU
@@ -117,8 +138,8 @@ CREATE TABLE CONCERT (
     name VARCHAR(200) NOT NULL,
     date TIMESTAMP,
     location JSON,
-    artist_id INT,
-    FOREIGN KEY (artist_id) REFERENCES ARTIST(artist_id)
+    performer_id INT,
+    FOREIGN KEY (performer_id) REFERENCES PERFORMER(performer_id)
 );
 
 -- CONCERT_SONG TABLOSU
