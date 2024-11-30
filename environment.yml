@@ -1,0 +1,11 @@
+name: tobbify
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - streamlit
+  - psycopg2-binary
+  - sqlalchemy
+  - requests
+  - pandas
+  - beautifulsoup4
