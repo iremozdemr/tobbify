@@ -73,62 +73,26 @@ def show_home_page():
     st.markdown("<h1>tobbify</h1>", unsafe_allow_html=True)
     st.markdown('<p class="section-title1">your personalized music streaming experience!</p>', unsafe_allow_html=True)
     
-    # Song search bar in a styled container at the top
+    # Song search bar
     search_term = st.text_input("search for songs", placeholder="enter song name...")
-    
-    # Perform search when user inputs a term
     if search_term:
         search_results = SongSearch.search_songs(search_term)
-        
         if search_results:
             st.markdown('<p class="section-title1">search results:</p>', unsafe_allow_html=True)
-
-            # Split search results into two columns
-            split_results = []
-            for song in search_results:
-                if "by" in song.lower():
-                    parts = song.split("by", 1)
-                    split_results.append({"song title": parts[0].strip(), "artist": parts[1].strip()})
-                else:
-                    split_results.append({"song title": song.strip(), "artist": "unknown"})
-            
-            # Convert to DataFrame
+            split_results = [
+                {"song title": song.split("by", 1)[0].strip(), "artist": song.split("by", 1)[1].strip()} 
+                if "by" in song.lower() else {"song title": song.strip(), "artist": "unknown"} 
+                for song in search_results
+            ]
             df = pd.DataFrame(split_results)
-            
-            # Display the results as a table
             st.table(df)
         else:
             st.markdown('<p class="section-title1">no matching songs found</p>', unsafe_allow_html=True)
     
-    # Add login and signup buttons
+    # Login and Signup buttons
     st.markdown('<div class="button-container">', unsafe_allow_html=True)
-    if "logged_in" not in st.session_state:
-        st.session_state["logged_in"] = False
-    if "current_page" not in st.session_state:
-        st.session_state["current_page"] = "home"
-    
-    if st.session_state.get("logged_in"):
-        st.markdown(f'<p class="section-title1">welcome back, {st.session_state["username"]}!</p>', unsafe_allow_html=True)
-        st.markdown('<p class="section-title1">explore your personalized music experience.</p>', unsafe_allow_html=True)
-        
-        cols = st.columns(2)
-        with cols[0]:
-            if st.button("view playlists"):
-                st.session_state["current_page"] = "playlists"
-        with cols[1]:
-            if st.button("logout"):
-                st.session_state["logged_in"] = False
-                st.session_state["username"] = ""
-                st.session_state["user_id"] = None
-    else:
-        st.markdown('<p class="section-title2">log in to explore your personalized music experience!</p>', unsafe_allow_html=True)
-        # Center-aligned login and signup buttons
-        st.markdown(
-            """
-            <div class="button-container">
-                <button class="enlarged-button" onclick="window.location.href='#'">login</button>
-                <button class="enlarged-button" onclick="window.location.href='#'">sign up</button>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    if st.button("login"):
+        st.session_state["current_page"] = "login"
+    if st.button("sign up"):
+        st.session_state["current_page"] = "signup"
+    st.markdown('</div>', unsafe_allow_html=True)

@@ -1,6 +1,7 @@
 import streamlit as st
 import home_page
 import login_page
+import signup_page  # Yeni signup modülü
 import playlist_page
 
 def main():
@@ -13,6 +14,8 @@ def main():
         home_page.show_home_page()
     elif st.session_state["current_page"] == "login":
         login_page.main()
+    elif st.session_state["current_page"] == "signup":
+        signup_page.show_signup_page()
     elif st.session_state["current_page"] == "playlists":
         playlist_page.show_playlist_page()
 

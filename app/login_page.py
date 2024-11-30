@@ -3,7 +3,7 @@ from database import UserAuthentication
 
 def show_login_page():
     # Sayfa yapılandırması
-    st.set_page_config(page_title="tobbify Login", layout="wide")
+    st.set_page_config(page_title="tobbify login", layout="wide")
     st.title("login page")
 
     # Oturum durumunu kontrol et
@@ -20,16 +20,19 @@ def show_login_page():
     username = st.text_input("username")
     password = st.text_input("password", type="password")
 
-    if st.button("login"):
-        success, user, user_id = UserAuthentication.login(username, password)
-        if success:
-            st.session_state["logged_in"] = True
-            st.session_state["username"] = user
-            st.session_state["current_page"] = "home"
-            st.session_state["user_id"] = user_id
-            st.success("login successful! redirecting to home page...")
+    if st.button("continue"):
+        if not username or not password:
+            st.error("username and password cannot be empty")
         else:
-            st.error("invalid username or password")
+            success, user, user_id = UserAuthentication.login(username, password)
+            if success:
+                st.session_state["logged_in"] = True
+                st.session_state["username"] = user
+                st.session_state["current_page"] = "home"
+                st.session_state["user_id"] = user_id
+                st.success("login successful! redirecting to home page...")
+            else:
+                st.error("invalid username or password")
 
     if st.button("back to home"):
         st.session_state["current_page"] = "home"
