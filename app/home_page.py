@@ -104,7 +104,7 @@ def show_home_page():
         st.write(f"welcome back, {st.session_state['username']}!")
         st.write("explore your personalized music experience")
         
-        cols = st.columns(3)
+        cols = st.columns(4)
         with cols[0]:
             if st.button("view playlists"):
                 st.session_state["current_page"] = "playlists"
@@ -117,13 +117,17 @@ def show_home_page():
                 st.session_state["username"] = ""
                 st.session_state["user_id"] = None
                 st.session_state["current_page"] = "home"
+        with cols[3]:
+            if st.button("play song"):
+                st.session_state["current_page"] = "music"
+
     else:
         st.write("your personalized music experience awaits, login to explore!")
         if st.button("login"):
             st.session_state["current_page"] = "login"
         if st.button("sign up"):
             st.session_state["current_page"] = "signup"
-
+        
     # Redirect to subscription page
     if st.session_state["current_page"] == "subscription":
         show_subscription_page()
@@ -133,7 +137,12 @@ def show_home_page():
         st.write("redirecting to sign up page...")
     elif st.session_state["current_page"] == "playlists":
         st.write("redirecting to playlists page...")
+    elif st.session_state["current_page"] == "music":
+        st.write("redirecting to music page...")
 
 
 def show_subscription_page():
     st.session_state["current_page"] = "subscription"
+
+def show_music_page():
+    st.session_state["current_page"] = "music"
