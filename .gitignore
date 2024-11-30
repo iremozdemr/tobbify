@@ -1,4 +1,23 @@
-
+# Python virtual environment
 /venv
+
+# Streamlit server log
 server_run.txt
+
+# Compiled Python files
 /app/__pycache__
+
+# macOS specific files
+.DS_Store
+
+# Compiled Python files globally
+__pycache__/
+*.py[cod]
+
+# Cache and logs
+*.log
+*.cache/
+
+/.streamlit
+
+.streamlit/
