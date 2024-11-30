@@ -10,9 +10,9 @@ class DatabaseConnection:
         try:
             conn = psycopg2.connect(
                 host="localhost",
-                database="TOBBify",
+                database="tobbify",
                 user="postgres",
-                password="4664"
+                password="2587"
             )
             return conn
         except psycopg2.Error as e:
@@ -22,48 +22,22 @@ class DatabaseConnection:
 class UserAuthentication:
     @staticmethod
     def register(username, password, email):
-        """Register a new user in the database."""
         conn = DatabaseConnection.connect_to_db()
         if not conn:
+            st.error("error connecting to the database")
             return False
         
         try:
             with conn.cursor() as cursor:
-                # Check if the username already exists
-                query = "SELECT username FROM public.USER WHERE username = %s"
-                cursor.execute(query, (username,))
-                existing_user = cursor.fetchone()
-                
-                if existing_user:
-                    return False  # Kullanıcı zaten var
-                
-                # Generate a unique subscription_id
-                while True:
-                    subscription_id = random.randint(100000, 999999)  # 6 haneli benzersiz bir ID
-                    query = "SELECT subscription_id FROM public.SUBSCRIPTION WHERE subscription_id = %s"
-                    cursor.execute(query, (subscription_id,))
-                    if not cursor.fetchone():  # Eğer ID kullanılmıyorsa döngüden çık
-                        break
-
-                # Insert the new subscription
-                start_date = datetime.now().strftime('%Y-%m-%d')  # Bugünün tarihi
                 query = """
-                    INSERT INTO public.SUBSCRIPTION (subscription_id, subscription_type, start_date)
-                    VALUES (%s, %s, %s)
+                    INSERT INTO "user" (username, passwd, email, subscription_id)
+                    VALUES (%s, %s, %s, %s);
                 """
-                cursor.execute(query, (subscription_id, "free", start_date))
-                
-                # Insert the new user with the subscription_id
-                query = """
-                    INSERT INTO public.USER (username, passwd, email, subscription_id)
-                    VALUES (%s, %s, %s, %s)
-                """
-                cursor.execute(query, (username, password, email, subscription_id))
-                
+                cursor.execute(query, (username, password, email, 1))  # subscription_id = 1
                 conn.commit()
                 return True
-        except psycopg2.Error as e:
-            st.error(f"An error occurred: {e}")
+        except Exception as e:
+            st.error(f"error registering user: {e}")
             return False
         finally:
             conn.close()
