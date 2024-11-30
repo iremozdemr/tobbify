@@ -37,9 +37,9 @@ def show_login_page():
     if st.button("back to home"):
         st.session_state["current_page"] = "home"
 
-    # Giriş durumunu göster
-    if st.session_state["logged_in"]:
-        st.info(f"logged in as {st.session_state['username']}")
+    # Geçerli sayfayı kontrol et ve yönlendirme yap
+    if st.session_state["current_page"] == "home" and st.session_state["logged_in"]:
+        st.stop()  # Sayfa değişimlerini işlemek için Streamlit'in akışını durdurur
 
 def main():
     show_login_page()

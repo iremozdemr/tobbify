@@ -19,6 +19,37 @@ class DatabaseConnection:
 
 class UserAuthentication:
     @staticmethod
+    def register(username, password, email):
+        """register a new user in the database"""
+        conn = DatabaseConnection.connect_to_db()
+        if not conn:
+            return False
+        
+        try:
+            with conn.cursor() as cursor:
+                # Check if the username already exists
+                query = "SELECT username FROM public.USER WHERE username = %s"
+                cursor.execute(query, (username,))
+                existing_user = cursor.fetchone()
+                
+                if existing_user:
+                    return False  # Kullanıcı zaten var
+                
+                # Insert the new user
+                query = """
+                    INSERT INTO public.USER (username, passwd, email)
+                    VALUES (%s, %s, %s)
+                """
+                cursor.execute(query, (username, password, email))
+                conn.commit()
+                return True
+        except psycopg2.Error as e:
+            st.error(f"an error occurred: {e}")
+            return False
+        finally:
+            conn.close()
+
+    @staticmethod
     def login(username, password):
         """authenticate user credentials"""
         conn = DatabaseConnection.connect_to_db()
