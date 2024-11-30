@@ -4,26 +4,57 @@ import streamlit as st
 class DatabaseConnection:
     @staticmethod
     def connect_to_db():
-        """Establish a connection to the PostgreSQL database"""
+        """establish a connection to the PostgreSQL database"""
         try:
             conn = psycopg2.connect(
                 host="localhost",
-                database="TOBBify",
+                database="tobbify",
                 user="postgres",
-                password="4664"
+                password="2587"
             )
             return conn
         except psycopg2.Error as e:
-            st.error(f"Error connecting to the database: {e}")
+            st.error(f"error connecting to the database: {e}")
             return None
 
 class UserAuthentication:
     @staticmethod
-    def login(username, password):
-        """Authenticate user credentials"""
+    def register(username, password, email):
+        """register a new user in the database"""
         conn = DatabaseConnection.connect_to_db()
         if not conn:
-            return False, None
+            return False
+        
+        try:
+            with conn.cursor() as cursor:
+                # Check if the username already exists
+                query = "SELECT username FROM public.USER WHERE username = %s"
+                cursor.execute(query, (username,))
+                existing_user = cursor.fetchone()
+                
+                if existing_user:
+                    return False  # Kullanıcı zaten var
+                
+                # Insert the new user
+                query = """
+                    INSERT INTO public.USER (username, passwd, email)
+                    VALUES (%s, %s, %s)
+                """
+                cursor.execute(query, (username, password, email))
+                conn.commit()
+                return True
+        except psycopg2.Error as e:
+            st.error(f"an error occurred: {e}")
+            return False
+        finally:
+            conn.close()
+
+    @staticmethod
+    def login(username, password):
+        """authenticate user credentials"""
+        conn = DatabaseConnection.connect_to_db()
+        if not conn:
+            return False, None, None
         
         try:
             with conn.cursor() as cursor:
@@ -34,17 +65,23 @@ class UserAuthentication:
                 """
                 cursor.execute(query, (username, password))
                 result = cursor.fetchone()
-                return bool(result), result[1], result[0] if result else None
+                
+                if result:  # Eğer sonuç varsa
+                    return True, result[1], result[0]
+                else:  # Eğer sonuç yoksa
+                    return False, None, None
+
         except psycopg2.Error as e:
-            st.error(f"An error occurred: {e}")
-            return False, None
+            st.error(f"an error occurred: {e}")
+            return False, None, None
+        
         finally:
             conn.close()
 
 class SongSearch:
     @staticmethod
     def search_songs(search_term):
-        """Search for songs and their artists in the database"""
+        """search for songs and their artists in the database"""
         conn = DatabaseConnection.connect_to_db()
         if not conn:
             return []
@@ -67,7 +104,7 @@ class SongSearch:
                 return ["{} by {}".format(title, artist_name) for title, artist_name in results]
         
         except psycopg2.Error as e:
-            st.error(f"An error occurred: {e}")
+            st.error(f"an error occurred: {e}")
             return []
         
         finally:
@@ -76,7 +113,7 @@ class SongSearch:
 class PlaylistSearch:
     @staticmethod
     def get_user_playlists(user_id):
-        """Retrieve all playlists for a specific user"""
+        """retrieve all playlists for a specific user"""
         conn = DatabaseConnection.connect_to_db()
         if not conn:
             return []
@@ -108,7 +145,7 @@ class PlaylistSearch:
 
     @staticmethod
     def get_playlist_songs(playlist_id):
-        """Retrieve all songs in a specific playlist"""
+        """retrieve all songs in a specific playlist"""
         conn = DatabaseConnection.connect_to_db()
         if not conn:
             return []
@@ -136,7 +173,7 @@ class PlaylistSearch:
                     })
                 return songs
         except psycopg2.Error as e:
-            st.error(f"An error occurred: {e}")
+            st.error(f"an error occurred: {e}")
             return []
         finally:
             conn.close()
