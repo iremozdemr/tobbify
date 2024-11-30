@@ -2,47 +2,46 @@ import streamlit as st
 from database import PlaylistSearch 
 
 def show_playlist_page():
-    st.set_page_config(page_title="TOBBify - Çalma Listeleri", layout="wide")
+    # Page configuration
+    st.set_page_config(page_title="tobbify - playlists", layout="wide")
     
     # Check if the user is logged in
     if not st.session_state.get("logged_in"):
-        st.error("Lütfen önce giriş yapın.")
-        if st.button("Giriş Yap"):
+        st.error("please log in first.")
+        if st.button("login"):
             st.session_state["current_page"] = "login"
-            st.experimental_rerun()
-        return
+        return  # Do not display the rest of the page for non-logged-in users
     
-    st.title("Çalma Listeleri")
+    st.title("playlists")
     
     try:
-        # Retrieve playlists for the current user
+        # Retrieve user playlists
         user_id = st.session_state.get("user_id")
         playlists = PlaylistSearch.get_user_playlists(user_id)
         
         if not playlists:
-            st.write("Henüz çalma listesi yok.")
+            st.write("you don't have any playlists yet.")
         else:
             # Display each playlist and its songs
             for playlist in playlists:
-                st.subheader(f"Playlist: {playlist['name']}")
-                st.write(f"Oluşturulma Tarihi: {playlist['created_at']}")
+                st.subheader(f"playlist: {playlist['name']}")
+                st.write(f"created on: {playlist['created_at']}")
                 
-                # Retrieve songs for this playlist
+                # Retrieve the songs in this playlist
                 songs = PlaylistSearch.get_playlist_songs(playlist['playlist_id'])
                 
                 if not songs:
-                    st.write("Bu çalma listesi için şarkı yok.")
+                    st.write("this playlist has no songs")
                 else:
-                    st.write("Şarkılar:")
+                    st.write("songs:")
                     for song in songs:
-                        st.write(f" - {song['title']} (Genre: {song['genre']})")
+                        st.write(f" - {song['title']} (genre: {song['genre']})")
                 
                 st.write("---")  # Separator between playlists
 
-        # Add a button to go back to the home page
-        if st.button("Ana Sayfa"):
+        # Button to go back to the home page
+        if st.button("home"):
             st.session_state["current_page"] = "home"
-            st.experimental_rerun()
     
     except Exception as e:
-        st.error(f"An error occurred: {e}")
+        st.error(f"an error occurred: {e}")
