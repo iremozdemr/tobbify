@@ -109,7 +109,7 @@ def show_home_page():
             if st.button("view playlists"):
                 st.session_state["current_page"] = "playlists"
         with cols[1]:
-            if st.button("view subscription"):
+            if st.button("view profile"):
                 st.session_state["current_page"] = "subscription"
         with cols[2]:
             if st.button("logout"):
@@ -136,54 +136,4 @@ def show_home_page():
 
 
 def show_subscription_page():
-    # Bu satırı kaldırıyoruz: st.set_page_config(page_title="Subscription Management", layout="wide")
-
-    st.markdown("<h1>Manage Subscription</h1>", unsafe_allow_html=True)
-    
-    user_id = st.session_state.get("user_id")
-    if not user_id:
-        st.error("You need to log in to manage your subscription.")
-        return
-
-    # Fetch user's subscription details
-    subscription = UserSubscription.get_subscription_details(user_id)
-    if not subscription:
-        st.error("No subscription found for your account.")
-        return
-
-    # Display subscription details
-    st.subheader("Your Subscription Details")
-    st.write(f"**Subscription Type:** {subscription['subscription_type']}")
-    st.write(f"**Start Date:** {subscription['start_date']}")
-    st.write(f"**End Date:** {subscription['end_date']}")
-
-    # Option to update subscription type
-    st.subheader("Update Subscription")
-    new_type = st.selectbox("Choose a new subscription type:", ["Free", "Family", "Premium"])
-
-    # Buton tıklandığında güncelleme yapılır
-    if st.button("Update Subscription"):
-        if new_type != subscription["subscription_type"]:
-            UserSubscription.update_subscription_type(subscription["subscription_id"], new_type)
-            st.session_state["subscription_updated"] = True  # Güncelleme durumunu kaydet
-        else:
-            st.session_state["subscription_warning"] = "You have selected the current subscription type."
-
-    # Abonelik durumu güncellendikten sonra mesaj göster
-    if st.session_state.get("subscription_updated"):
-        st.success("Subscription type updated successfully!")
-        st.session_state["subscription_updated"] = False  # Mesajı tekrar göstermemek için sıfırla
-
-    # Hata mesajı varsa göster
-    if st.session_state.get("subscription_warning"):
-        st.warning(st.session_state["subscription_warning"])
-        st.session_state["subscription_warning"] = None  # Mesajı tekrar göstermemek için sıfırla
-
-
-    
-    
-
-
-
-    
-    
+    st.session_state["current_page"] = "subscription"
