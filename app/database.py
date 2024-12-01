@@ -232,3 +232,61 @@ class UserSubscription:
             return False  # Hata durumunda False döner
         finally:
             conn.close()
+
+
+
+class SongRecommendation:
+    def get_recommendations_by_mood_and_location(mood, location, limit=5):
+        mood_to_genre = {
+            "cheerful": ["pop", "reggae"],
+            "melancholy": ["blues", "country"],
+            "calm": ["jazz", "reggae"],
+            "energetic": ["rock", "hip hop"],
+            "romantic": ["jazz", "blues"]
+        }
+        
+        location_to_genre = {
+            "çim amfi": ["pop", "reggae", "rock"],
+            "fuaye": ["pop", "hip hop", "rock"],
+            "kütüphane": ["jazz", "blues", "country"],
+            "etü mutfak": ["blues", "jazz", "reggae"]
+        }
+        
+        # Mood ve mekan için ortak türleri bul
+        mood_genres = set(mood_to_genre.get(mood.lower(), []))
+        location_genres = set(location_to_genre.get(location.lower(), []))
+        common_genres = list(mood_genres & location_genres)
+        
+        if not common_genres:
+            st.warning("No matching genres for this mood and location.")
+            return []
+        
+        conn = DatabaseConnection.connect_to_db()
+        if not conn:
+            return []
+        
+        try:
+            with conn.cursor() as cursor:
+                # SQL sorgusu
+                query = """
+                    SELECT s.title, a.artist_name, g.name AS genre
+                    FROM public.SONG s
+                    INNER JOIN public.SONG_ARTIST sa ON s.song_id = sa.song_id
+                    INNER JOIN public.ARTIST a ON sa.artist_id = a.artist_id
+                    INNER JOIN public.GENRE g ON s.genre_id = g.genre_id
+                    WHERE g.name = ANY(%s)
+                    ORDER BY RANDOM()
+                    LIMIT %s
+                """
+                cursor.execute(query, (common_genres, limit))
+                results = cursor.fetchall()
+                
+                return [
+                    {"title": title, "artist": artist_name, "genre": genre}
+                    for title, artist_name, genre in results
+                ]
+        except psycopg2.Error as e:
+            st.error(f"An error occurred: {e}")
+            return []
+        finally:
+            conn.close()
