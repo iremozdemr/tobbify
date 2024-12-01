@@ -20,7 +20,6 @@ def show_subscription_page():
 
     st.markdown("<h1>manage profile</h1>", unsafe_allow_html=True)
 
-    # kullanıcı giriş kontrolü
     user_id = st.session_state.get("user_id")
     if not user_id:
         st.error("you need to log in to manage your subscription.")
@@ -31,7 +30,6 @@ def show_subscription_page():
     st.subheader("username")
     st.write(f"{st.session_state['username']}")
 
-    # kullanıcının abonelik bilgilerini kontrol ve yükleme
     if "subscription_details" not in st.session_state:
         subscription = UserSubscription.get_subscription_details(user_id)
         if not subscription:
@@ -39,20 +37,17 @@ def show_subscription_page():
             if st.button("back to homepage"):
                 st.session_state["current_page"] = "home"
             return
-        st.session_state["subscription_details"] = subscription  # Başlat
+        st.session_state["subscription_details"] = subscription  
 
-    # mevcut abonelik bilgilerini al
     subscription = st.session_state["subscription_details"]
     st.subheader("subscription details")
     st.write(f"**subscription type:** {subscription['subscription_type']}")
     st.write(f"**start date:** {subscription['start_date']}")
     st.write(f"**end date:** {subscription['end_date']}")
 
-    # kullanıcının seçili türünü saklama
     if "selected_subscription_type" not in st.session_state:
         st.session_state["selected_subscription_type"] = subscription["subscription_type"]
 
-    # abonelik türü seçimi
     new_type = st.selectbox(
         "choose a new subscription type:",
         ["Free", "Family", "Premium"],
@@ -60,7 +55,6 @@ def show_subscription_page():
         key="selected_subscription_type"
     )
 
-    # güncelleme işlemi
     if st.button("update subscription"):
         if new_type == subscription["subscription_type"]:
             st.warning("you have selected the current subscription type.")

@@ -196,4 +196,4 @@ def show_playlist_page():
 
     if st.session_state.get("trigger_reload", False):
         st.session_state["trigger_reload"] = False
-        st.session_state["reload"] = True  # Simulate reload
+        st.session_state["reload"] = True  
