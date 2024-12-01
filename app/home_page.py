@@ -93,7 +93,7 @@ def show_home_page():
         st.write(f"welcome back, {st.session_state['username']}!")
         st.write("explore your personalized music experience")
         
-        cols = st.columns(5)
+        cols = st.columns(6)
         with cols[0]:
             if st.button("view playlists"):
                 st.session_state["current_page"] = "playlists"
@@ -107,6 +107,9 @@ def show_home_page():
             if st.button("song recommendations"):
                 st.session_state["current_page"] = "recommendation"
         with cols[4]:
+            if st.button("data visualization"):
+                st.session_state["current_page"] = "graphs"
+        with cols[5]:
             if st.button("logout"):
                 st.session_state["logged_in"] = False
                 st.session_state["username"] = ""

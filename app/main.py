@@ -6,6 +6,7 @@ import playlist_page
 import subscription
 import music_page 
 import recommendation
+import graphs
 
 def main():
     if "current_page" not in st.session_state:
@@ -25,6 +26,8 @@ def main():
         music_page.show_music_page()
     elif st.session_state["current_page"] == "recommendation":
         recommendation.show_recommendation_page()
+    elif st.session_state["current_page"] == "graphs":
+        graphs.show_visualization_page()
 
 if __name__ == "__main__":
     main()
