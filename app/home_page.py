@@ -80,6 +80,7 @@ def show_home_page():
         search_results = SongSearch.search_songs(search_term)
         if search_results:
             st.markdown('<p class="section-title1">search results:</p>', unsafe_allow_html=True)
+            
             split_results = [
                 {
                     "song title": song.split("by", 1)[0].strip(),
@@ -91,8 +92,42 @@ def show_home_page():
             ]
             df = pd.DataFrame(split_results)
             st.table(df)
+            
+            # Kullanıcı bir şarkı seçsin
+            selected_song = st.selectbox("Select a song to view lyrics:", df["song title"])
+            
+            if selected_song:
+                # Seçilen şarkının sözlerini al ve göster
+                lyrics = SongSearch.get_song_lyrics(selected_song)
+                if lyrics:
+                    formatted_lyrics = SongSearch.format_lyrics(lyrics)
+                    st.markdown(formatted_lyrics, unsafe_allow_html=True)
+                else:
+                    st.warning("Lyrics not found.")
         else:
             st.markdown('<p class="section-title1">no matching songs found</p>', unsafe_allow_html=True)
+    # Song search bar
+    # search_term = st.text_input("search for songs", placeholder="enter song name...")
+    # if search_term:
+    #     search_results = SongSearch.search_songs(search_term)
+    #     if search_results:
+    #         st.markdown('<p class="section-title1">search results:</p>', unsafe_allow_html=True)
+            
+    #         # Search results in a DataFrame
+    #         df = pd.DataFrame(search_results)
+    #         df.index += 1  # Index starts from 1
+    #         st.table(df.rename(columns={"title": "Song Title", "artist": "Artist"}))
+            
+    #         # Allow user to select a song
+    #         selected_song = st.selectbox("Select a song to view lyrics:", [s['title'] for s in search_results])
+            
+    #         if selected_song:
+    #             # Fetch and display lyrics
+    #             lyrics = SongSearch.get_song_lyrics(selected_song)
+    #             st.markdown(f"### Lyrics for **{selected_song}**")
+    #             st.text(lyrics)
+    #     else:
+    #         st.markdown('<p class="section-title1">no matching songs found</p>', unsafe_allow_html=True)
 
     # Initialize session state
     if "logged_in" not in st.session_state:

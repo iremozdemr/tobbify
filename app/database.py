@@ -10,9 +10,9 @@ class DatabaseConnection:
         try:
             conn = psycopg2.connect(
                 host="localhost",
-                database="tobbify",
+                database="TOBBify",
                 user="postgres",
-                password="2587"
+                password="4664"
             )
             return conn
         except psycopg2.Error as e:
@@ -100,6 +100,62 @@ class SongSearch:
         
         finally:
             conn.close()
+    @staticmethod
+    def get_song_lyrics(song_title):
+        """Fetch lyrics for a given song."""
+        conn = DatabaseConnection.connect_to_db()
+        if not conn:
+            return "Could not connect to the database."
+
+        try:
+            with conn.cursor() as cursor:
+                # lyrics ve song tablolarını birleştiren sorgu
+                query = """
+                    SELECT l.content
+                    FROM lyrics l
+                    INNER JOIN song s ON l.song_id = s.song_id
+                    WHERE s.title = %s
+                """
+                cursor.execute(query, (song_title,))
+                result = cursor.fetchone()
+                return result[0] if result else "Lyrics not found."
+        except psycopg2.Error as e:
+            st.error(f"An error occurred while fetching lyrics: {e}")
+            return "Lyrics not found."
+        finally:
+            conn.close()
+    @staticmethod
+    def format_lyrics(lyrics, max_words_per_line=5):
+        """
+        Format lyrics by breaking into lines with a fixed number of words per line.
+        """
+        # Lyrics'i kelimelere böl
+        words = lyrics.split()
+        formatted_lines = []
+
+        # Belirli sayıda kelimeleri birleştirerek yeni satırlar oluştur
+        for i in range(0, len(words), max_words_per_line):
+            line = " ".join(words[i:i + max_words_per_line])
+            formatted_lines.append(line)
+        
+        # Satırları birleştir
+        formatted_lyrics = "\n".join(formatted_lines)
+
+        # CSS ile stil ekle ve döndür
+        return f"""
+        <div style="
+            font-family: 'Arial', sans-serif; 
+            font-size: 18px;  
+            line-height: 1.8; 
+            padding: 20px; 
+            background-color: #e0e0e0;  
+            border: 2px solid #bbb; 
+            border-radius: 10px;
+            color: #000000; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+            {formatted_lyrics}
+        </div>
+        """
 
 class PlaylistSearch:
     @staticmethod
