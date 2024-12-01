@@ -5,6 +5,7 @@ import signup_page  # Yeni signup modülü
 import playlist_page
 import subscription
 import music_page 
+import recommendation
 
 def main():
     # Oturum durumunu başlat
@@ -24,6 +25,8 @@ def main():
         subscription.show_subscription_page()
     elif st.session_state["current_page"] == "music":
         music_page.show_music_page()
+    elif st.session_state["current_page"] == "recommendation":
+        recommendation.show_recommendation_page()
 
 if __name__ == "__main__":
     main()
