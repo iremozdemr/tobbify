@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # TOBBify: A Music Database Management System
 
 TOBBify is a comprehensive music database management system designed to enhance the way users organize and interact with their music collections. The project combines advanced database management, full-text search capabilities, and a user-friendly interface to cater to casual listeners and industry professionals alike.
@@ -41,13 +41,17 @@ The TOBBify system is built to:
 
 ### **Backend**
 - **Python**: For backend logic and database interaction.
-  - Libraries: `SQLAlchemy`, `Pandas`, `psycopg2`.
+  - Libraries: `Pandas`, `psycopg2`.
 
 ### **Database**
 - **PostgreSQL**: For relational database management, full-text search, and efficient queries.
 
 ### **Frontend**
 - **Streamlit**: For building an intuitive and interactive web interface.
+- **Matplotlib**: For data visualization.
+
+### **API**
+- **Deezer API**: Used to fetch real-time music data (tracks, artists, albums). 
 
 ### **Data Preprocessing**
 - **CSV Files**: Dataset of 28,000+ songs (`dataset.csv`) used for populating the database.
@@ -79,7 +83,7 @@ The detailed Entity-Relationship Diagram (EER) is as follows:
 
 The Relational Schema After Normalization of Tables:
 
-![Relational Schema](diagrams/schema.png)
+![Relational Schema](diagrams/relational_schema.jpeg)
 
 ---
 
@@ -90,24 +94,20 @@ The Relational Schema After Normalization of Tables:
    - Create a new database (e.g., `tobbify`).
 
 2. **Run Database Setup Script**:
-   - Populate the database by running the `populate_database.sql` script:
-     ```bash
-     psql -U <your-username> -d <database-name> -f populate_database.sql
-     ```
+   - Create database tables by running the `./db/create_tables.sql` script:
 
-3. **Run User Data Script**:
-   - Execute the `random_user.py` script to generate mock user data:
-     ```bash
-     python random_user.py
-     ```
+3. **Populate the Database**:
+   - Populate the database by running the `./populate_database.py` script:
+   - Execute the `./random_user.py` script to generate mock user data:
+   - Populate the database by running the `./db/test_user.sql` script:
 
-4. **Run the Application**:
+5. **Run the Application**:
    - Launch the Streamlit application using the following command:
      ```bash
-     streamlit run main.py
+     streamlit run ./app/main.py
      ```
 
-5. **Enjoy Your Music!**
+6. **Enjoy Your Music!**
    - Open the application in your browser and start exploring TOBBify.
 
 ---
@@ -130,16 +130,16 @@ The Relational Schema After Normalization of Tables:
 
 ## Contributors
 
-- **Inci Sila Kaleli**
-- **Ezgi Cinkilic**
-- **Irem Ozdemir**
-- **Sacide Sena Filiz**
 - **Emre Belikirik**
+- **Ezgi Cinkilic**
+- **Sacide Sena Filiz**
+- **Inci Sila Kaleli**
+- **Irem Ozdemir**
 
-=======
+---
+
 [![CodeQL Advanced](https://github.com/tobbify-team/tobbify/actions/workflows/codeql.yml/badge.svg)](https://github.com/tobbify-team/tobbify/actions/workflows/codeql.yml)
 
 [![Bandit](https://github.com/iremozdemr/tobbify/actions/workflows/bandit.yml/badge.svg)](https://github.com/iremozdemr/tobbify/actions/workflows/bandit.yml)
 
 [![Labeler](https://github.com/tobbify-team/tobbify/actions/workflows/label.yml/badge.svg)](https://github.com/tobbify-team/tobbify/actions/workflows/label.yml)
->>>>>>> cb0124f9bcc6b460195d64d616cdf7cdab78efb1
