@@ -102,3 +102,6 @@ def show_visualization_page():
         st.error(f"an error occurred: {e}")
     finally:
         conn.close()
+
+    if st.button("back to homepage"):
+        st.session_state["current_page"] = "home"
