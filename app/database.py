@@ -33,7 +33,7 @@ class UserAuthentication:
                     INSERT INTO "user" (username, passwd, email, subscription_id)
                     VALUES (%s, %s, %s, %s);
                 """
-                cursor.execute(query, (username, password, email, 1))  # subscription_id = 1
+                cursor.execute(query, (username, password, email, 1))
                 conn.commit()
                 return True
         except Exception as e:
@@ -59,9 +59,9 @@ class UserAuthentication:
                 cursor.execute(query, (username, password))
                 result = cursor.fetchone()
                 
-                if result:  # Eğer sonuç varsa
+                if result:  
                     return True, result[1], result[0]
-                else:  # Eğer sonuç yoksa
+                else: 
                     return False, None, None
 
         except psycopg2.Error as e:
@@ -109,7 +109,6 @@ class SongSearch:
 
         try:
             with conn.cursor() as cursor:
-                # lyrics ve song tablolarını birleştiren sorgu
                 query = """
                     SELECT l.content
                     FROM lyrics l
@@ -129,19 +128,15 @@ class SongSearch:
         """
         Format lyrics by breaking into lines with a fixed number of words per line.
         """
-        # Lyrics'i kelimelere böl
         words = lyrics.split()
         formatted_lines = []
 
-        # Belirli sayıda kelimeleri birleştirerek yeni satırlar oluştur
         for i in range(0, len(words), max_words_per_line):
             line = " ".join(words[i:i + max_words_per_line])
             formatted_lines.append(line)
         
-        # Satırları birleştir
         formatted_lyrics = "\n".join(formatted_lines)
 
-        # CSS ile stil ekle ve döndür
         return f"""
         <div style="
             font-family: 'Arial', sans-serif; 
@@ -244,7 +239,6 @@ class UserSubscription:
                 cursor.execute(query, (user_id,))
                 result = cursor.fetchone()
 
-                # Sonuç varsa döndür
                 if result:
                     return {
                         "subscription_id": result[0],
@@ -282,10 +276,10 @@ class UserSubscription:
                 query = "UPDATE public.SUBSCRIPTION SET subscription_type = %s WHERE subscription_id = %s"
                 cursor.execute(query, (new_type, subscription_id))
                 conn.commit()
-                return True  # Başarılı olduğunda True döner
+                return True 
         except psycopg2.Error as e:
             st.error(f"An error occurred while updating subscription: {e}")
-            return False  # Hata durumunda False döner
+            return False 
         finally:
             conn.close()
 
@@ -308,7 +302,6 @@ class SongRecommendation:
             "etü mutfak": ["blues", "jazz", "reggae"]
         }
         
-        # Mood ve mekan için ortak türleri bul
         mood_genres = set(mood_to_genre.get(mood.lower(), []))
         location_genres = set(location_to_genre.get(location.lower(), []))
         common_genres = list(mood_genres & location_genres)
@@ -323,7 +316,6 @@ class SongRecommendation:
         
         try:
             with conn.cursor() as cursor:
-                # SQL sorgusu
                 query = """
                     SELECT s.title, a.artist_name, g.name AS genre
                     FROM public.SONG s

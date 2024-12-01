@@ -4,7 +4,6 @@ import pandas as pd
 
 
 def show_home_page():
-    # Page configuration
     st.set_page_config(page_title="tobbify - home", layout="wide")
     
     # Custom CSS for improved aesthetics
@@ -106,30 +105,6 @@ def show_home_page():
                     st.warning("Lyrics not found.")
         else:
             st.markdown('<p class="section-title1">no matching songs found</p>', unsafe_allow_html=True)
-    # Song search bar
-    # search_term = st.text_input("search for songs", placeholder="enter song name...")
-    # if search_term:
-    #     search_results = SongSearch.search_songs(search_term)
-    #     if search_results:
-    #         st.markdown('<p class="section-title1">search results:</p>', unsafe_allow_html=True)
-            
-    #         # Search results in a DataFrame
-    #         df = pd.DataFrame(search_results)
-    #         df.index += 1  # Index starts from 1
-    #         st.table(df.rename(columns={"title": "Song Title", "artist": "Artist"}))
-            
-    #         # Allow user to select a song
-    #         selected_song = st.selectbox("Select a song to view lyrics:", [s['title'] for s in search_results])
-            
-    #         if selected_song:
-    #             # Fetch and display lyrics
-    #             lyrics = SongSearch.get_song_lyrics(selected_song)
-    #             st.markdown(f"### Lyrics for **{selected_song}**")
-    #             st.text(lyrics)
-    #     else:
-    #         st.markdown('<p class="section-title1">no matching songs found</p>', unsafe_allow_html=True)
-
-    # Initialize session state
     if "logged_in" not in st.session_state:
         st.session_state["logged_in"] = False
     if "current_page" not in st.session_state:
