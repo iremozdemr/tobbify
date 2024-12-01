@@ -222,12 +222,13 @@ class UserSubscription:
                     st.error("Subscription ID does not exist.")
                     return False  
 
+
                 query = "UPDATE public.SUBSCRIPTION SET subscription_type = %s WHERE subscription_id = %s"
                 cursor.execute(query, (new_type, subscription_id))
                 conn.commit()
-                return True  
+                return True  # Başarılı olduğunda True döner
         except psycopg2.Error as e:
             st.error(f"An error occurred while updating subscription: {e}")
-            return False  
+            return False  # Hata durumunda False döner
         finally:
             conn.close()
