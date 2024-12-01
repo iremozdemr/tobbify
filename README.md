@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TOBBify: A Music Database Management System
 
 TOBBify is a comprehensive music database management system designed to enhance the way users organize and interact with their music collections. The project combines advanced database management, full-text search capabilities, and a user-friendly interface to cater to casual listeners and industry professionals alike.
@@ -135,3 +136,10 @@ The Relational Schema After Normalization of Tables:
 - **Sacide Sena Filiz**
 - **Emre Belikirik**
 
+=======
+[![CodeQL Advanced](https://github.com/tobbify-team/tobbify/actions/workflows/codeql.yml/badge.svg)](https://github.com/tobbify-team/tobbify/actions/workflows/codeql.yml)
+
+[![Bandit](https://github.com/iremozdemr/tobbify/actions/workflows/bandit.yml/badge.svg)](https://github.com/iremozdemr/tobbify/actions/workflows/bandit.yml)
+
+[![Labeler](https://github.com/tobbify-team/tobbify/actions/workflows/label.yml/badge.svg)](https://github.com/tobbify-team/tobbify/actions/workflows/label.yml)
+>>>>>>> cb0124f9bcc6b460195d64d616cdf7cdab78efb1

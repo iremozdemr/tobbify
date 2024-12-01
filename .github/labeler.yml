@@ -1,0 +1,26 @@
+frontend:
+  - "frontend/**"
+  - "**/*.html"
+  - "**/*.css"
+  - "**/*.js"
+
+backend:
+  - "backend/**"
+  - "**/*.py"
+  - "**/*.java"
+
+database:
+  - "database/**"
+  - "**/*.sql"
+
+tests:
+  - "tests/**"
+  - "**/test_*.py"
+  - "**/*.spec.js"
+
+documentation:
+  - "docs/**"
+  - "**/*.md"
+
+miscellaneous:
+  - "**"
