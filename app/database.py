@@ -10,9 +10,9 @@ class DatabaseConnection:
         try:
             conn = psycopg2.connect(
                 host="localhost",
-                database="tobbify",
+                database="TOBBify",
                 user="postgres",
-                password="2587"
+                password="4664"
             )
             return conn
         except psycopg2.Error as e:

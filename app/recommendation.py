@@ -18,12 +18,34 @@ def show_recommendation_page():
     if st.button("Get Recommendations"):
         recommendations = SongRecommendation.get_recommendations_by_mood_and_location(mood, location)
         
+        # if recommendations:
+        #     st.write(f"Here are some songs for your mood: '{mood}' and your location: '{location}'")
+        #     for song in recommendations:
+        #         st.write(f"- **{song['title']}** by {song['artist']} (Genre: {song['genre']})")
+        # else:
+        #     st.write("No recommendations found for this mood.")
         if recommendations:
-            st.write(f"Here are some songs for your mood: '{mood}' and your location: '{location}'")
-            for song in recommendations:
-                st.write(f"- **{song['title']}** by {song['artist']} (Genre: {song['genre']})")
+            st.write(f"### Here are some songs for your mood: **'{mood}'** and your location: **'{location}'**")
+            
+            # Sonuçları bir DataFrame'e dönüştür
+            import pandas as pd
+            recommendations_df = pd.DataFrame(recommendations)
+
+            # Numara sütununu ekle ve 1'den başlat
+            recommendations_df.index = range(1, len(recommendations_df) + 1)
+            recommendations_df.index.name = "No."
+
+            # Tabloyu Streamlit'te göster
+            st.table(recommendations_df.rename(columns={
+                "title": "Song Title",
+                "artist": "Artist",
+                "genre": "Genre"
+            }))
         else:
-            st.write("No recommendations found for this mood.")
+            st.warning("No recommendations found for this mood and location.")
+
+
+        
 
     if st.button("back to homepage"):
         st.session_state["current_page"] = "home"
