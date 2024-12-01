@@ -2,18 +2,30 @@ import streamlit as st
 from database import UserAuthentication
 
 def show_signup_page():
-    # Sayfa yapılandırması
     st.set_page_config(page_title="tobbify sign up", layout="wide")
-    st.title("sign up page")
+    
+    st.markdown(
+        """
+        <style>
+        body {
+            background-color: #f0f2f6;
+        }
+        h1 {
+            color: #3498db;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    # Kullanıcı adı, şifre ve email giriş alanları
+    st.markdown("<h1>sign up</h1>", unsafe_allow_html=True)
+
     username = st.text_input("choose a username")
     email = st.text_input("enter your email")
     password = st.text_input("choose a password", type="password")
     confirm_password = st.text_input("confirm your password", type="password")
 
     if st.button("continue"):
-        # Boş alan kontrolü
         if not username or not email or not password or not confirm_password:
             st.error("all fields are required")
         elif password != confirm_password:

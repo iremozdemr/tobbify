@@ -33,7 +33,7 @@ class UserAuthentication:
                     INSERT INTO "user" (username, passwd, email, subscription_id)
                     VALUES (%s, %s, %s, %s);
                 """
-                cursor.execute(query, (username, password, email, 1))  # subscription_id = 1
+                cursor.execute(query, (username, password, email, 1))
                 conn.commit()
                 return True
         except Exception as e:
@@ -59,9 +59,9 @@ class UserAuthentication:
                 cursor.execute(query, (username, password))
                 result = cursor.fetchone()
                 
-                if result:  # Eğer sonuç varsa
+                if result:  
                     return True, result[1], result[0]
-                else:  # Eğer sonuç yoksa
+                else: 
                     return False, None, None
 
         except psycopg2.Error as e:
@@ -81,7 +81,6 @@ class SongSearch:
         
         try:
             with conn.cursor() as cursor:
-                # Search songs and join with artist table
                 query = """
                     SELECT s.title, a.artist_name
                     FROM public.SONG s
@@ -93,7 +92,6 @@ class SongSearch:
                 cursor.execute(query, (f"%{search_term}%",))
                 results = cursor.fetchall()
                 
-                # Format the results
                 return ["{} by {}".format(title, artist_name) for title, artist_name in results]
         
         except psycopg2.Error as e:
@@ -102,6 +100,57 @@ class SongSearch:
         
         finally:
             conn.close()
+    @staticmethod
+    def get_song_lyrics(song_title):
+        """Fetch lyrics for a given song."""
+        conn = DatabaseConnection.connect_to_db()
+        if not conn:
+            return "Could not connect to the database."
+
+        try:
+            with conn.cursor() as cursor:
+                query = """
+                    SELECT l.content
+                    FROM lyrics l
+                    INNER JOIN song s ON l.song_id = s.song_id
+                    WHERE s.title = %s
+                """
+                cursor.execute(query, (song_title,))
+                result = cursor.fetchone()
+                return result[0] if result else "Lyrics not found."
+        except psycopg2.Error as e:
+            st.error(f"An error occurred while fetching lyrics: {e}")
+            return "Lyrics not found."
+        finally:
+            conn.close()
+    @staticmethod
+    def format_lyrics(lyrics, max_words_per_line=5):
+        """
+        Format lyrics by breaking into lines with a fixed number of words per line.
+        """
+        words = lyrics.split()
+        formatted_lines = []
+
+        for i in range(0, len(words), max_words_per_line):
+            line = " ".join(words[i:i + max_words_per_line])
+            formatted_lines.append(line)
+        
+        formatted_lyrics = "\n".join(formatted_lines)
+
+        return f"""
+        <div style="
+            font-family: 'Arial', sans-serif; 
+            font-size: 18px;  
+            line-height: 1.8; 
+            padding: 20px; 
+            background-color: #e0e0e0;  
+            border: 2px solid #bbb; 
+            border-radius: 10px;
+            color: #000000; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+            {formatted_lyrics}
+        </div>
+        """
 
 class PlaylistSearch:
     @staticmethod
@@ -121,7 +170,6 @@ class PlaylistSearch:
                 cursor.execute(query, (user_id,))
                 results = cursor.fetchall()
                 
-                # Format the results
                 playlists = []
                 for row in results:
                     playlists.append({
@@ -155,7 +203,6 @@ class PlaylistSearch:
                 cursor.execute(query, (playlist_id,))
                 results = cursor.fetchall()
                 
-                # Format the results
                 songs = []
                 for row in results:
                     songs.append({
@@ -177,7 +224,6 @@ class UserSubscription:
         """
         Fetch subscription details for a given user ID.
         """
-        # Bağlantıyı al
         conn = DatabaseConnection.connect_to_db()
         if not conn:
             return None
@@ -193,7 +239,6 @@ class UserSubscription:
                 cursor.execute(query, (user_id,))
                 result = cursor.fetchone()
 
-                # Sonuç varsa döndür
                 if result:
                     return {
                         "subscription_id": result[0],
@@ -213,29 +258,83 @@ class UserSubscription:
         """
         Update the subscription type for a given subscription ID.
         """
-        # Veritabanı bağlantısını al
         conn = DatabaseConnection.connect_to_db()
         if not conn:
             return False
 
         try:
             with conn.cursor() as cursor:
-                # Mevcut subscription_id'nin varlığını kontrol et
                 query = "SELECT subscription_id FROM public.SUBSCRIPTION WHERE subscription_id = %s"
                 cursor.execute(query, (subscription_id,))
                 existing_subscription = cursor.fetchone()
                 
                 if not existing_subscription:
                     st.error("Subscription ID does not exist.")
-                    return False  # Abonelik ID'si yok
+                    return False  
 
-                # Abonelik türünü güncelle
+
                 query = "UPDATE public.SUBSCRIPTION SET subscription_type = %s WHERE subscription_id = %s"
                 cursor.execute(query, (new_type, subscription_id))
                 conn.commit()
-                return True  # Başarılı olduğunda True döner
+                return True 
         except psycopg2.Error as e:
             st.error(f"An error occurred while updating subscription: {e}")
-            return False  # Hata durumunda False döner
+            return False 
+        finally:
+            conn.close()
+
+
+
+class SongRecommendation:
+    def get_recommendations_by_mood_and_location(mood, location, limit=5):
+        mood_to_genre = {
+            "cheerful": ["pop", "reggae"],
+            "melancholy": ["blues", "country"],
+            "calm": ["jazz", "reggae"],
+            "energetic": ["rock", "hip hop"],
+            "romantic": ["jazz", "blues"]
+        }
+        
+        location_to_genre = {
+            "çim amfi": ["pop", "reggae", "rock"],
+            "fuaye": ["pop", "hip hop", "rock"],
+            "kütüphane": ["jazz", "blues", "country"],
+            "etü mutfak": ["blues", "jazz", "reggae"]
+        }
+        
+        mood_genres = set(mood_to_genre.get(mood.lower(), []))
+        location_genres = set(location_to_genre.get(location.lower(), []))
+        common_genres = list(mood_genres & location_genres)
+        
+        if not common_genres:
+            st.warning("No matching genres for this mood and location.")
+            return []
+        
+        conn = DatabaseConnection.connect_to_db()
+        if not conn:
+            return []
+        
+        try:
+            with conn.cursor() as cursor:
+                query = """
+                    SELECT s.title, a.artist_name, g.name AS genre
+                    FROM public.SONG s
+                    INNER JOIN public.SONG_ARTIST sa ON s.song_id = sa.song_id
+                    INNER JOIN public.ARTIST a ON sa.artist_id = a.artist_id
+                    INNER JOIN public.GENRE g ON s.genre_id = g.genre_id
+                    WHERE g.name = ANY(%s)
+                    ORDER BY RANDOM()
+                    LIMIT %s
+                """
+                cursor.execute(query, (common_genres, limit))
+                results = cursor.fetchall()
+                
+                return [
+                    {"title": title, "artist": artist_name, "genre": genre}
+                    for title, artist_name, genre in results
+                ]
+        except psycopg2.Error as e:
+            st.error(f"An error occurred: {e}")
+            return []
         finally:
             conn.close()

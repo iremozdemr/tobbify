@@ -111,7 +111,7 @@ def delete_playlist(playlist_id):
         conn.close()
 
 def show_playlist_page():
-    st.set_page_config(page_title="tobbify - playlists", layout="wide")
+    st.set_page_config(page_title="tobbify playlists", layout="wide")
     
     css_style = """
     <style>
@@ -119,12 +119,8 @@ def show_playlist_page():
             background-color: #f0f2f5;
             font-family: arial, sans-serif;
         }
-        .title {
-            color: #4a90e2;
-            text-align: center;
-            font-size: 36px;
-            margin-top: 20px;
-            font-weight: bold;
+        h1 {
+            color: #3498db;
         }
     </style>
     """
@@ -200,4 +196,4 @@ def show_playlist_page():
 
     if st.session_state.get("trigger_reload", False):
         st.session_state["trigger_reload"] = False
-        st.session_state["reload"] = True  # Simulate reload
+        st.session_state["reload"] = True  

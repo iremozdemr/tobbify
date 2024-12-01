@@ -1,17 +1,17 @@
 import streamlit as st
 import home_page
 import login_page
-import signup_page  # Yeni signup modülü
+import signup_page  
 import playlist_page
 import subscription
 import music_page 
+import recommendation
+import graphs
 
 def main():
-    # Oturum durumunu başlat
     if "current_page" not in st.session_state:
         st.session_state["current_page"] = "home"
 
-    # Geçerli sayfaya göre ilgili sayfayı göster
     if st.session_state["current_page"] == "home":
         home_page.show_home_page()
     elif st.session_state["current_page"] == "login":
@@ -24,6 +24,10 @@ def main():
         subscription.show_subscription_page()
     elif st.session_state["current_page"] == "music":
         music_page.show_music_page()
+    elif st.session_state["current_page"] == "recommendation":
+        recommendation.show_recommendation_page()
+    elif st.session_state["current_page"] == "graphs":
+        graphs.show_visualization_page()
 
 if __name__ == "__main__":
     main()

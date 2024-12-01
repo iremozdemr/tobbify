@@ -2,11 +2,24 @@ import streamlit as st
 from database import UserAuthentication
 
 def show_login_page():
-    # Sayfa yapılandırması
     st.set_page_config(page_title="tobbify login", layout="wide")
-    st.title("login page")
 
-    # Oturum durumunu kontrol et
+    st.markdown(
+        """
+        <style>
+        body {
+            background-color: #f0f2f6;
+        }
+        h1 {
+            color: #3498db;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("<h1>login</h1>", unsafe_allow_html=True)
+
     if "current_page" not in st.session_state:
         st.session_state["current_page"] = "home"
     if "logged_in" not in st.session_state:
@@ -16,7 +29,6 @@ def show_login_page():
     if "user_id" not in st.session_state:
         st.session_state["user_id"] = None
 
-    # Giriş formu
     username = st.text_input("username")
     password = st.text_input("password", type="password")
 
@@ -37,9 +49,8 @@ def show_login_page():
     if st.button("back to home"):
         st.session_state["current_page"] = "home"
 
-    # Geçerli sayfayı kontrol et ve yönlendirme yap
     if st.session_state["current_page"] == "home" and st.session_state["logged_in"]:
-        st.stop()  # Sayfa değişimlerini işlemek için Streamlit'in akışını durdurur
+        st.stop()  
 
 def main():
     show_login_page()
