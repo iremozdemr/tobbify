@@ -26,7 +26,7 @@ def search_deezer(query):
         return []
 
 def show_music_page():
-    st.title("music player")
+    st.set_page_config(page_title="tobbify sign up", layout="wide")
 
     # Custom CSS for border
     st.markdown(
@@ -54,10 +54,15 @@ def show_music_page():
             color: #3498db;
             text-decoration: none;
         }
+        h1 {
+            color: #3498db;
+        }
         </style>
         """,
         unsafe_allow_html=True,
     )
+
+    st.markdown("<h1>music player</h1>", unsafe_allow_html=True)
 
     search_query = st.text_input("search for a song, album or artist")
     if search_query:
