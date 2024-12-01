@@ -81,7 +81,6 @@ class SongSearch:
         
         try:
             with conn.cursor() as cursor:
-                # Search songs and join with artist table
                 query = """
                     SELECT s.title, a.artist_name
                     FROM public.SONG s
@@ -93,7 +92,6 @@ class SongSearch:
                 cursor.execute(query, (f"%{search_term}%",))
                 results = cursor.fetchall()
                 
-                # Format the results
                 return ["{} by {}".format(title, artist_name) for title, artist_name in results]
         
         except psycopg2.Error as e:
@@ -121,7 +119,6 @@ class PlaylistSearch:
                 cursor.execute(query, (user_id,))
                 results = cursor.fetchall()
                 
-                # Format the results
                 playlists = []
                 for row in results:
                     playlists.append({
@@ -155,7 +152,6 @@ class PlaylistSearch:
                 cursor.execute(query, (playlist_id,))
                 results = cursor.fetchall()
                 
-                # Format the results
                 songs = []
                 for row in results:
                     songs.append({
@@ -177,7 +173,6 @@ class UserSubscription:
         """
         Fetch subscription details for a given user ID.
         """
-        # Bağlantıyı al
         conn = DatabaseConnection.connect_to_db()
         if not conn:
             return None
@@ -213,29 +208,26 @@ class UserSubscription:
         """
         Update the subscription type for a given subscription ID.
         """
-        # Veritabanı bağlantısını al
         conn = DatabaseConnection.connect_to_db()
         if not conn:
             return False
 
         try:
             with conn.cursor() as cursor:
-                # Mevcut subscription_id'nin varlığını kontrol et
                 query = "SELECT subscription_id FROM public.SUBSCRIPTION WHERE subscription_id = %s"
                 cursor.execute(query, (subscription_id,))
                 existing_subscription = cursor.fetchone()
                 
                 if not existing_subscription:
                     st.error("Subscription ID does not exist.")
-                    return False  # Abonelik ID'si yok
+                    return False  
 
-                # Abonelik türünü güncelle
                 query = "UPDATE public.SUBSCRIPTION SET subscription_type = %s WHERE subscription_id = %s"
                 cursor.execute(query, (new_type, subscription_id))
                 conn.commit()
-                return True  # Başarılı olduğunda True döner
+                return True  
         except psycopg2.Error as e:
             st.error(f"An error occurred while updating subscription: {e}")
-            return False  # Hata durumunda False döner
+            return False  
         finally:
             conn.close()
