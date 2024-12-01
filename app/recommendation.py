@@ -4,7 +4,6 @@ from database import SongRecommendation
 def show_recommendation_page():
     st.markdown("<h1>Song Recommendations</h1>", unsafe_allow_html=True)
     
-    # Kullanıcıdan ruh hali girişi
     mood = st.selectbox(
         "Select your current mood:",
         ["cheerful", "melancholy", "calm", "energetic", "romantic"]
@@ -27,15 +26,12 @@ def show_recommendation_page():
         if recommendations:
             st.write(f"### Here are some songs for your mood: **'{mood}'** and your location: **'{location}'**")
             
-            # Sonuçları bir DataFrame'e dönüştür
             import pandas as pd
             recommendations_df = pd.DataFrame(recommendations)
 
-            # Numara sütununu ekle ve 1'den başlat
             recommendations_df.index = range(1, len(recommendations_df) + 1)
             recommendations_df.index.name = "No."
 
-            # Tabloyu Streamlit'te göster
             st.table(recommendations_df.rename(columns={
                 "title": "Song Title",
                 "artist": "Artist",

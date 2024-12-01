@@ -57,6 +57,5 @@ def show_subscription_page():
             else:
                 st.error("an error occurred while updating your subscription.")
 
-    # ana sayfaya geri dönme
     if st.button("back to homepage"):
         st.session_state["current_page"] = "home"
