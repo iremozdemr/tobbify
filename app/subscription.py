@@ -2,8 +2,23 @@ import streamlit as st
 from database import UserSubscription
 
 def show_subscription_page():
-    # sayfa başlığı
-    st.title("manage profile")
+    st.set_page_config(page_title="tobbify profile", layout="wide")
+    
+    st.markdown(
+        """
+        <style>
+        body {
+            background-color: #f0f2f6;
+        }
+        h1 {
+            color: #3498db;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("<h1>manage profile</h1>", unsafe_allow_html=True)
 
     # kullanıcı giriş kontrolü
     user_id = st.session_state.get("user_id")

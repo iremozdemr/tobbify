@@ -4,7 +4,22 @@ from database import UserAuthentication
 def show_login_page():
     # Sayfa yapılandırması
     st.set_page_config(page_title="tobbify login", layout="wide")
-    st.title("login page")
+
+    st.markdown(
+        """
+        <style>
+        body {
+            background-color: #f0f2f6;
+        }
+        h1 {
+            color: #3498db;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("<h1>login</h1>", unsafe_allow_html=True)
 
     # Oturum durumunu kontrol et
     if "current_page" not in st.session_state:

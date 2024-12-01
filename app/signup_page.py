@@ -4,7 +4,22 @@ from database import UserAuthentication
 def show_signup_page():
     # Sayfa yapılandırması
     st.set_page_config(page_title="tobbify sign up", layout="wide")
-    st.title("sign up page")
+    
+    st.markdown(
+        """
+        <style>
+        body {
+            background-color: #f0f2f6;
+        }
+        h1 {
+            color: #3498db;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("<h1>sign up</h1>", unsafe_allow_html=True)
 
     # Kullanıcı adı, şifre ve email giriş alanları
     username = st.text_input("choose a username")
