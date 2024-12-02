@@ -187,7 +187,7 @@ def show_playlist_page():
                         st.success("playlist deleted successfully!")
                         st.session_state["trigger_reload"] = True
 
-        if st.button("back to homepage"):
+        if st.button("done!"):
             st.session_state["current_page"] = "home"
             st.session_state["trigger_reload"] = True
 
